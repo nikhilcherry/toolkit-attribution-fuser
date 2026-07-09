@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="300" viewBox="0 0 820 300" font-family="system-ui, sans-serif">
+  <rect width="820" height="300" fill="#111111"/>
+  <text x="410" y="32" fill="#eeeeee" font-size="18" font-weight="700" text-anchor="middle">attribute(t0, t1) — majority vote over voiced frames</text>
+
+  <!-- axis -->
+  <line x1="60" y1="150" x2="760" y2="150" stroke="#555555" stroke-width="2"/>
+  <text x="60" y="175" fill="#9aa0a6" font-size="12">t0</text>
+  <text x="740" y="175" fill="#9aa0a6" font-size="12">t1</text>
+
+  <!-- 10 frame ticks: 6 'a' (red) then 4 'b' (blue) -->
+  <!-- frames spaced evenly from x=90 to x=730 -->
+  <g id="ticks">
+    <rect x="88"  y="110" width="14" height="80" fill="#e06c75"/>
+    <rect x="158" y="110" width="14" height="80" fill="#e06c75"/>
+    <rect x="228" y="110" width="14" height="80" fill="#e06c75"/>
+    <rect x="298" y="110" width="14" height="80" fill="#e06c75"/>
+    <rect x="368" y="110" width="14" height="80" fill="#e06c75"/>
+    <rect x="438" y="110" width="14" height="80" fill="#e06c75"/>
+    <rect x="508" y="110" width="14" height="80" fill="#61afef"/>
+    <rect x="578" y="110" width="14" height="80" fill="#61afef"/>
+    <rect x="648" y="110" width="14" height="80" fill="#61afef"/>
+    <rect x="718" y="110" width="14" height="80" fill="#61afef"/>
+  </g>
+
+  <text x="240" y="100" fill="#e06c75" font-size="12" text-anchor="middle">Face A speaking (6 frames)</text>
+  <text x="613" y="100" fill="#61afef" font-size="12" text-anchor="middle">Face B (4 frames)</text>
+
+  <!-- bracket -->
+  <path d="M90,215 L90,225 L730,225 L730,215" stroke="#888888" stroke-width="2" fill="none"/>
+  <text x="410" y="245" fill="#9aa0a6" font-size="13" text-anchor="middle">10 voiced frames in window</text>
+
+  <!-- result box -->
+  <rect x="290" y="255" width="240" height="35" rx="8" fill="#1c1c1c" stroke="#e06c75" stroke-width="2"/>
+  <text x="410" y="278" fill="#e06c75" font-size="14" font-weight="700" text-anchor="middle">{ speaker: 'a', confidence: 0.6 }</text>
+</svg>

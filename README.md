@@ -9,6 +9,8 @@ has no I/O of any kind — no camera, mic, DOM, or internal timers — every
 timestamp is supplied by the caller, so it runs identically in the browser
 and in Node.
 
+![AttributionFuser architecture — LipActivityMeter and MicVAD feed into AttributionFuser, which outputs a speaker attribution](docs/images/architecture.svg)
+
 ## Install
 
 No npm dependencies. Copy `attribution-fuser.js` into your project, or clone
@@ -63,6 +65,22 @@ fuser.instantWinner();  // → same shape, for the latest recorded frame (live U
 the returned `speaker` (for `instantWinner()`, that's a single frame, so
 confidence is `1` whenever a speaker is determined).
 
+### How a single frame is voted (rule 2)
+
+![Flowchart: check top energy against minEnergy, then against runnerUp times dominanceRatio, to decide topId wins, multiple, or unknown](docs/images/frame-vote-flowchart.svg)
+
+### How `dominanceRatio` decides outright win vs. `'multiple'`
+
+![Bar chart comparing top and runner-up energy against the dominanceRatio threshold, in the win case and the multiple case](docs/images/dominance-ratio.svg)
+
+### How a window result is computed (rule 3)
+
+![Timeline of ten voiced frames, six voting for Face A and four for Face B, resulting in speaker a with confidence 0.6](docs/images/timeline-example.svg)
+
+### How pruning keeps memory bounded (rule 5)
+
+![Sliding window diagram: frames older than now minus historyMs are dropped inside record(), only recent frames are retained](docs/images/pruning-window.svg)
+
 ## Tests
 
 Plain JS, no test framework required:
@@ -88,6 +106,8 @@ python3 -m http.server 8000
 ```
 
 Then open `http://localhost:8000/demo.html`.
+
+![Screenshot of demo.html: three energy sliders, a VAD toggle, live instantWinner and rolling-window panels showing Face A, and a colored frame timeline](docs/images/demo-preview.svg)
 
 ## Composes with
 

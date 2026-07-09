@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="320" viewBox="0 0 820 320" font-family="system-ui, sans-serif">
+  <rect width="820" height="320" fill="#111111"/>
+
+  <!-- LipActivityMeter box -->
+  <rect x="30" y="40" width="220" height="90" rx="10" fill="#1c1c1c" stroke="#61afef" stroke-width="2"/>
+  <text x="140" y="75" fill="#eeeeee" font-size="16" font-weight="700" text-anchor="middle">LipActivityMeter</text>
+  <text x="140" y="100" fill="#9aa0a6" font-size="13" text-anchor="middle">.getAllEnergies()</text>
+  <text x="140" y="118" fill="#61afef" font-size="12" text-anchor="middle">Map&lt;faceId, energy&gt;</text>
+
+  <!-- MicVAD box -->
+  <rect x="30" y="190" width="220" height="90" rx="10" fill="#1c1c1c" stroke="#98c379" stroke-width="2"/>
+  <text x="140" y="225" fill="#eeeeee" font-size="16" font-weight="700" text-anchor="middle">MicVAD</text>
+  <text x="140" y="250" fill="#9aa0a6" font-size="13" text-anchor="middle">.isVoiced</text>
+  <text x="140" y="268" fill="#98c379" font-size="12" text-anchor="middle">boolean</text>
+
+  <!-- Arrows into AttributionFuser -->
+  <path d="M250,85 L360,140" stroke="#61afef" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+  <path d="M250,235 L360,180" stroke="#98c379" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- AttributionFuser box -->
+  <rect x="360" y="100" width="240" height="120" rx="10" fill="#1c1c1c" stroke="#e5c07b" stroke-width="2.5"/>
+  <text x="480" y="140" fill="#eeeeee" font-size="18" font-weight="700" text-anchor="middle">AttributionFuser</text>
+  <text x="480" y="163" fill="#9aa0a6" font-size="12" text-anchor="middle">.record(t, energies, vad)</text>
+  <text x="480" y="182" fill="#9aa0a6" font-size="12" text-anchor="middle">.attribute(t0, t1)</text>
+  <text x="480" y="201" fill="#9aa0a6" font-size="12" text-anchor="middle">.instantWinner()</text>
+
+  <!-- Arrow out -->
+  <path d="M600,160 L710,160" stroke="#e06c75" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- Output box -->
+  <rect x="710" y="110" width="90" height="100" rx="10" fill="#1c1c1c" stroke="#e06c75" stroke-width="2"/>
+  <text x="755" y="150" fill="#eeeeee" font-size="13" font-weight="700" text-anchor="middle">Speaker-</text>
+  <text x="755" y="168" fill="#eeeeee" font-size="13" font-weight="700" text-anchor="middle">attributed</text>
+  <text x="755" y="186" fill="#eeeeee" font-size="13" font-weight="700" text-anchor="middle">captions</text>
+
+  <text x="410" y="300" fill="#555555" font-size="12">No I/O inside AttributionFuser — every timestamp, energy map, and VAD flag is supplied by the caller.</text>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#888888"/>
+    </marker>
+  </defs>
+</svg>

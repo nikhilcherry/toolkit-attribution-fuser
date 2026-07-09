@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="260" viewBox="0 0 820 260" font-family="system-ui, sans-serif">
+  <rect width="820" height="260" fill="#111111"/>
+  <text x="410" y="32" fill="#eeeeee" font-size="18" font-weight="700" text-anchor="middle">historyMs pruning inside record()</text>
+
+  <line x1="60" y1="140" x2="760" y2="140" stroke="#555555" stroke-width="2"/>
+  <text x="60" y="165" fill="#9aa0a6" font-size="12">older</text>
+  <text x="730" y="165" fill="#9aa0a6" font-size="12">now</text>
+
+  <!-- pruned frames (gray, faded) -->
+  <rect x="90"  y="120" width="10" height="40" fill="#3a3a3a"/>
+  <rect x="140" y="120" width="10" height="40" fill="#3a3a3a"/>
+  <rect x="190" y="120" width="10" height="40" fill="#3a3a3a"/>
+  <rect x="240" y="120" width="10" height="40" fill="#3a3a3a"/>
+  <text x="165" y="105" fill="#666666" font-size="12" text-anchor="middle">pruned (older than historyMs)</text>
+
+  <!-- cutoff line -->
+  <line x1="320" y1="90" x2="320" y2="180" stroke="#e5c07b" stroke-width="2" stroke-dasharray="6,5"/>
+  <text x="320" y="80" fill="#e5c07b" font-size="12" text-anchor="middle">cutoff = now − historyMs</text>
+
+  <!-- retained frames (colored) -->
+  <rect x="360" y="120" width="10" height="40" fill="#e06c75"/>
+  <rect x="410" y="120" width="10" height="40" fill="#e06c75"/>
+  <rect x="460" y="120" width="10" height="40" fill="#61afef"/>
+  <rect x="510" y="120" width="10" height="40" fill="#61afef"/>
+  <rect x="560" y="120" width="10" height="40" fill="#e06c75"/>
+  <rect x="610" y="120" width="10" height="40" fill="#98c379"/>
+  <rect x="660" y="120" width="10" height="40" fill="#61afef"/>
+  <rect x="710" y="120" width="10" height="40" fill="#e06c75"/>
+  <text x="535" y="105" fill="#cccccc" font-size="12" text-anchor="middle">retained frames</text>
+
+  <text x="410" y="215" fill="#555555" font-size="12" text-anchor="middle">Each call to record(t, ...) drops any frame with t &lt; (t − historyMs) before returning.</text>
+</svg>

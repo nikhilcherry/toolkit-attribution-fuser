@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="360" viewBox="0 0 820 360" font-family="system-ui, sans-serif">
+  <rect width="820" height="360" fill="#111111"/>
+  <text x="410" y="32" fill="#eeeeee" font-size="18" font-weight="700" text-anchor="middle">dominanceRatio: outright win vs. 'multiple'</text>
+
+  <!-- Panel 1: outright win -->
+  <text x="190" y="60" fill="#9aa0a6" font-size="13" text-anchor="middle">top clears threshold -&gt; face wins</text>
+  <line x1="60" y1="290" x2="330" y2="290" stroke="#555555" stroke-width="2"/>
+  <!-- runner-up bar -->
+  <rect x="110" y="250" width="50" height="40" fill="#61afef"/>
+  <text x="135" y="305" fill="#61afef" font-size="12" text-anchor="middle">runner-up</text>
+  <!-- threshold dashed line = runnerUp * dominanceRatio -->
+  <line x1="60" y1="150" x2="330" y2="150" stroke="#e5c07b" stroke-width="2" stroke-dasharray="6,5"/>
+  <text x="335" y="154" fill="#e5c07b" font-size="11">runnerUp × dominanceRatio</text>
+  <!-- top bar, clears threshold -->
+  <rect x="230" y="90" width="50" height="200" fill="#e06c75"/>
+  <text x="255" y="305" fill="#e06c75" font-size="12" text-anchor="middle">top</text>
+  <text x="255" y="75" fill="#e06c75" font-size="12" font-weight="700" text-anchor="middle">wins</text>
+
+  <!-- Panel 2: multiple -->
+  <text x="630" y="60" fill="#9aa0a6" font-size="13" text-anchor="middle">top within ratio of runner-up -&gt; 'multiple'</text>
+  <line x1="500" y1="290" x2="770" y2="290" stroke="#555555" stroke-width="2"/>
+  <rect x="550" y="220" width="50" height="70" fill="#61afef"/>
+  <text x="575" y="305" fill="#61afef" font-size="12" text-anchor="middle">runner-up</text>
+  <line x1="500" y1="120" x2="770" y2="120" stroke="#e5c07b" stroke-width="2" stroke-dasharray="6,5"/>
+  <text x="775" y="124" fill="#e5c07b" font-size="11">threshold</text>
+  <rect x="670" y="190" width="50" height="100" fill="#e06c75"/>
+  <text x="695" y="305" fill="#e06c75" font-size="12" text-anchor="middle">top</text>
+  <text x="632" y="175" fill="#e5c07b" font-size="12" font-weight="700" text-anchor="middle">'multiple'</text>
+
+  <text x="410" y="340" fill="#555555" font-size="12" text-anchor="middle">Default dominanceRatio = 1.7 — the top face must out-energy the runner-up by 1.7x to win outright.</text>
+</svg>

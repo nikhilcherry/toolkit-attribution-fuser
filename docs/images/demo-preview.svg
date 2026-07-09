@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="640" viewBox="0 0 800 640" font-family="system-ui, sans-serif">
+  <rect width="800" height="640" fill="#111111"/>
+  <text x="30" y="45" fill="#eeeeee" font-size="22" font-weight="700">AttributionFuser — live demo</text>
+  <text x="30" y="75" fill="#cccccc" font-size="14">No camera or mic — drag the sliders to fake per-face lip energy and toggle VAD.</text>
+
+  <!-- Face A slider -->
+  <rect x="30" y="100" width="740" height="46" rx="8" fill="#1c1c1c"/>
+  <circle cx="45" cy="123" r="7" fill="#e06c75"/>
+  <text x="65" y="128" fill="#eeeeee" font-size="14">Face A</text>
+  <rect x="150" y="119" width="380" height="6" rx="3" fill="#61afef"/>
+  <rect x="150" y="119" width="380" height="6" rx="3" fill="#ffffff" opacity="0.15"/>
+  <circle cx="410" cy="122" r="9" fill="#61afef" stroke="#fff" stroke-width="1.5"/>
+  <text x="700" y="128" fill="#eeeeee" font-size="13" text-anchor="middle">0.0130</text>
+
+  <!-- Face B slider -->
+  <rect x="30" y="154" width="740" height="46" rx="8" fill="#1c1c1c"/>
+  <circle cx="45" cy="177" r="7" fill="#61afef"/>
+  <text x="65" y="182" fill="#eeeeee" font-size="14">Face B</text>
+  <rect x="150" y="173" width="380" height="6" rx="3" fill="#61afef"/>
+  <circle cx="215" cy="176" r="9" fill="#61afef" stroke="#fff" stroke-width="1.5"/>
+  <text x="700" y="182" fill="#eeeeee" font-size="13" text-anchor="middle">0.0030</text>
+
+  <!-- Face C slider -->
+  <rect x="30" y="208" width="740" height="46" rx="8" fill="#1c1c1c"/>
+  <circle cx="45" cy="231" r="7" fill="#98c379"/>
+  <text x="65" y="236" fill="#eeeeee" font-size="14">Face C</text>
+  <rect x="150" y="227" width="380" height="6" rx="3" fill="#61afef"/>
+  <circle cx="158" cy="230" r="9" fill="#61afef" stroke="#fff" stroke-width="1.5"/>
+  <text x="700" y="236" fill="#eeeeee" font-size="13" text-anchor="middle">0.0002</text>
+
+  <!-- VAD toggle + frame count -->
+  <rect x="30" y="278" width="90" height="34" rx="6" fill="#98c379"/>
+  <text x="75" y="300" fill="#111111" font-size="13" font-weight="700" text-anchor="middle">VAD: on</text>
+  <text x="135" y="300" fill="#777777" font-size="13">2054 frames recorded</text>
+
+  <!-- instantWinner panel -->
+  <rect x="30" y="330" width="740" height="90" rx="8" fill="#1c1c1c"/>
+  <text x="50" y="358" fill="#999999" font-size="13">instantWinner() — live, this frame</text>
+  <text x="50" y="390" fill="#e06c75" font-size="22" font-weight="700">Face A</text>
+  <text x="50" y="410" fill="#999999" font-size="13">confidence: 1.00</text>
+
+  <!-- window panel -->
+  <rect x="30" y="434" width="740" height="90" rx="8" fill="#1c1c1c"/>
+  <text x="50" y="462" fill="#999999" font-size="13">attribute(now - 2000, now) — rolling 2s window</text>
+  <text x="50" y="494" fill="#e06c75" font-size="22" font-weight="700">Face A</text>
+  <text x="50" y="514" fill="#999999" font-size="13">confidence: 1.00</text>
+
+  <!-- timeline canvas -->
+  <rect x="30" y="540" width="740" height="60" rx="6" fill="#000000"/>
+  <rect x="30" y="540" width="160" height="60" fill="#555555"/>
+  <rect x="190" y="540" width="580" height="60" fill="#e06c75"/>
+
+  <text x="400" y="625" fill="#555555" font-size="12" text-anchor="middle">Actual live output of demo.html, served with `python3 -m http.server 8000`</text>
+</svg>
