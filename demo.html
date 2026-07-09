@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>AttributionFuser Demo</title>
+<style>
+  body {
+    font-family: system-ui, sans-serif;
+    max-width: 720px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    background: #111;
+    color: #eee;
+  }
+  h1 { font-size: 1.3rem; }
+  .face {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 0.75rem 0;
+    padding: 0.5rem;
+    border-radius: 8px;
+    background: #1c1c1c;
+  }
+  .face label { width: 90px; flex-shrink: 0; }
+  .face input[type="range"] { flex: 1; }
+  .face .value { width: 70px; text-align: right; font-variant-numeric: tabular-nums; }
+  .swatch { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+  #a .swatch { background: #e06c75; }
+  #b .swatch { background: #61afef; }
+  #c .swatch { background: #98c379; }
+
+  .controls { margin: 1.5rem 0; display: flex; align-items: center; gap: 1rem; }
+  .toggle {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .toggle.off { background: #444; color: #ccc; }
+  .toggle.on { background: #98c379; color: #111; }
+
+  .panel {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    border-radius: 8px;
+    background: #1c1c1c;
+  }
+  .panel h2 { margin-top: 0; font-size: 1rem; color: #999; }
+  .result { font-size: 1.4rem; font-weight: 700; }
+  .confidence { color: #999; font-size: 0.9rem; }
+
+  canvas {
+    display: block;
+    margin-top: 1rem;
+    background: #000;
+    border-radius: 6px;
+    width: 100%;
+    height: 60px;
+  }
+</style>
+</head>
+<body>
+  <h1>AttributionFuser — live demo</h1>
+  <p>No camera or mic — drag the sliders to fake per-face lip energy and toggle VAD.</p>
+
+  <div class="face" id="a">
+    <span class="swatch"></span>
+    <label for="slider-a">Face A</label>
+    <input type="range" id="slider-a" min="0" max="0.02" step="0.0001" value="0.0001" />
+    <span class="value" id="value-a">0.0001</span>
+  </div>
+  <div class="face" id="b">
+    <span class="swatch"></span>
+    <label for="slider-b">Face B</label>
+    <input type="range" id="slider-b" min="0" max="0.02" step="0.0001" value="0.0001" />
+    <span class="value" id="value-b">0.0001</span>
+  </div>
+  <div class="face" id="c">
+    <span class="swatch"></span>
+    <label for="slider-c">Face C</label>
+    <input type="range" id="slider-c" min="0" max="0.02" step="0.0001" value="0.0001" />
+    <span class="value" id="value-c">0.0001</span>
+  </div>
+
+  <div class="controls">
+    <button id="vad-toggle" class="toggle off">VAD: off</button>
+    <span id="frame-count" style="color:#666; font-size:0.85rem;"></span>
+  </div>
+
+  <div class="panel">
+    <h2>instantWinner() — live, this frame</h2>
+    <div class="result" id="instant-result">unknown</div>
+    <div class="confidence" id="instant-confidence">confidence: 0.00</div>
+  </div>
+
+  <div class="panel">
+    <h2>attribute(now - 2000, now) — rolling 2s window</h2>
+    <div class="result" id="window-result">unknown</div>
+    <div class="confidence" id="window-confidence">confidence: 0.00</div>
+  </div>
+
+  <canvas id="timeline" width="720" height="60"></canvas>
+
+  <script type="module">
+    import { AttributionFuser } from './attribution-fuser.js';
+
+    const fuser = new AttributionFuser({
+      dominanceRatio: 1.7,
+      minEnergy: 0.00004,
+      historyMs: 30000,
+    });
+
+    const sliders = {
+      a: document.getElementById('slider-a'),
+      b: document.getElementById('slider-b'),
+      c: document.getElementById('slider-c'),
+    };
+    const values = {
+      a: document.getElementById('value-a'),
+      b: document.getElementById('value-b'),
+      c: document.getElementById('value-c'),
+    };
+    const vadToggle = document.getElementById('vad-toggle');
+    const frameCountEl = document.getElementById('frame-count');
+    const instantResultEl = document.getElementById('instant-result');
+    const instantConfidenceEl = document.getElementById('instant-confidence');
+    const windowResultEl = document.getElementById('window-result');
+    const windowConfidenceEl = document.getElementById('window-confidence');
+    const canvas = document.getElementById('timeline');
+    const ctx = canvas.getContext('2d');
+
+    let vadActive = false;
+    let frameCount = 0;
+    const ticks = []; // { t, vote }
+    const colors = { a: '#e06c75', b: '#61afef', c: '#98c379', multiple: '#e5c07b', unknown: '#555' };
+
+    vadToggle.addEventListener('click', () => {
+      vadActive = !vadActive;
+      vadToggle.classList.toggle('on', vadActive);
+      vadToggle.classList.toggle('off', !vadActive);
+      vadToggle.textContent = `VAD: ${vadActive ? 'on' : 'off'}`;
+    });
+
+    for (const id of ['a', 'b', 'c']) {
+      sliders[id].addEventListener('input', () => {
+        values[id].textContent = Number(sliders[id].value).toFixed(4);
+      });
+    }
+
+    function formatSpeaker(speaker) {
+      if (speaker === undefined) return 'unknown';
+      if (speaker === 'multiple') return 'multiple';
+      if (speaker === 'unknown') return 'unknown';
+      return `Face ${String(speaker).toUpperCase()}`;
+    }
+
+    function drawTimeline(now) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const windowMs = 10000;
+      const cutoff = now - windowMs;
+      for (const tick of ticks) {
+        if (tick.t < cutoff) continue;
+        const x = ((tick.t - cutoff) / windowMs) * canvas.width;
+        ctx.fillStyle = colors[tick.vote] || '#555';
+        ctx.fillRect(x, 0, 2, canvas.height);
+      }
+    }
+
+    function tick() {
+      const now = performance.now();
+      const energies = new Map([
+        ['a', Number(sliders.a.value)],
+        ['b', Number(sliders.b.value)],
+        ['c', Number(sliders.c.value)],
+      ]);
+
+      fuser.record(now, energies, vadActive);
+      frameCount++;
+
+      const live = fuser.instantWinner();
+      ticks.push({ t: now, vote: vadActive ? live.speaker : 'unknown' });
+      if (ticks.length > 2000) ticks.shift();
+
+      instantResultEl.textContent = formatSpeaker(live.speaker);
+      instantConfidenceEl.textContent = `confidence: ${live.confidence.toFixed(2)}`;
+
+      frameCountEl.textContent = `${frameCount} frames recorded`;
+
+      drawTimeline(now);
+      requestAnimationFrame(tick);
+    }
+
+    function updateWindow() {
+      const now = performance.now();
+      const result = fuser.attribute(now - 2000, now);
+      windowResultEl.textContent = formatSpeaker(result.speaker);
+      windowConfidenceEl.textContent = `confidence: ${result.confidence.toFixed(2)}`;
+    }
+
+    requestAnimationFrame(tick);
+    setInterval(updateWindow, 1000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "name": "toolkit-attribution-fuser",
+  "version": "1.0.0",
+  "description": "Pure logic module fusing per-face lip-energy history with voice activity to answer 'who spoke during time window [t0, t1]?'",
+  "type": "module",
+  "main": "attribution-fuser.js",
+  "scripts": {
+    "test": "node attribution-fuser.test.js"
+  },
+  "license": "MIT"
+}
