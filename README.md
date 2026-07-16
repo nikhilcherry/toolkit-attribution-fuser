@@ -1,5 +1,11 @@
 # toolkit-attribution-fuser
 
+<p align="center">
+  <img alt="js" src="https://img.shields.io/badge/JavaScript-zero_dependencies-F7DF1E">
+  <img alt="platform" src="https://img.shields.io/badge/runs_in-browser_%26_Node-3178C6">
+  <img alt="license" src="https://img.shields.io/badge/license-MIT-green">
+</p>
+
 `AttributionFuser` is a standalone logic module that fuses per-face lip-energy
 history with voice activity (VAD) over time to answer: **who spoke during
 time window `[t0, t1]`?**
@@ -119,3 +125,7 @@ has zero dependency on them:
 
 - `LipActivityMeter.getAllEnergies()` → feeds the `energiesMap` argument to `record()`.
 - `MicVAD.isVoiced` → feeds the `vadActive` argument to `record()`.
+
+## License
+
+MIT
