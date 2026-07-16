@@ -184,6 +184,51 @@ test('zero voiced frames in window -> unknown, confidence 0', () => {
   assert('confidence is 0', result.confidence === 0, `got ${result.confidence}`);
 });
 
+test('record() with a non-Map energiesMap does not throw and votes unknown', () => {
+  const fuser = new AttributionFuser();
+  // e.g. a caller accidentally passing a plain object or undefined instead
+  // of the Map the API documents.
+  assert('record(plain object) does not throw', (() => {
+    try { fuser.record(0, { a: 0.5 }, true); return true; } catch { return false; }
+  })());
+  assert('record(undefined) does not throw', (() => {
+    try { fuser.record(100, undefined, true); return true; } catch { return false; }
+  })());
+  const result = fuser.attribute(0, 100);
+  assert('speaker is "unknown" (no real energies were ever recorded)', result.speaker === 'unknown', `got ${result.speaker}`);
+});
+
+test('dominanceRatio boundary: top exactly runnerUp * dominanceRatio counts as an outright win', () => {
+  // topEnergy >= runnerUpEnergy * dominanceRatio uses >=, so an exact
+  // boundary match must win outright, not fall through to "multiple".
+  const fuser = new AttributionFuser({ dominanceRatio: 2 });
+  fuser.record(0, new Map([['a', 0.02], ['b', 0.01]]), true); // 0.02 === 0.01 * 2 exactly
+  const result = fuser.attribute(0, 0);
+  assert('speaker is "a" at the exact dominance boundary', result.speaker === 'a', `got ${result.speaker}`);
+});
+
+test('minEnergy boundary: energy exactly at the floor is NOT unknown', () => {
+  // topEnergy < minEnergy returns unknown, so an exact match at the floor
+  // must still count as speaking.
+  const fuser = new AttributionFuser({ minEnergy: 0.01 });
+  fuser.record(0, new Map([['a', 0.01]]), true);
+  const result = fuser.attribute(0, 0);
+  assert('speaker is "a" at the exact minEnergy floor', result.speaker === 'a', `got ${result.speaker}`);
+});
+
+test('a tie between a real speaker and an "unknown" vote resolves to multiple', () => {
+  // computeFrameVote can itself return the string 'unknown' for a voiced
+  // frame (everyone below minEnergy) or 'multiple' (close energies) --
+  // those are valid votes in the majority count, not just faceIds, and a
+  // tie against one of them must still resolve via the same "ties ->
+  // multiple" rule as a tie between two faceIds.
+  const fuser = new AttributionFuser({ minEnergy: 0.01 });
+  fuser.record(0, new Map([['a', 0.02]]), true); // clear winner: 'a'
+  fuser.record(100, new Map([['a', 0.001]]), true); // below floor: 'unknown'
+  const result = fuser.attribute(0, 100);
+  assert('speaker is "multiple" on an a/unknown tie', result.speaker === 'multiple', `got ${result.speaker}`);
+});
+
 // ---------------------------------------------------------------------
 
 console.log(`\n${passed} passed, ${failed} failed`);

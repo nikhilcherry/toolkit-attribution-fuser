@@ -92,7 +92,10 @@ node attribution-fuser.test.js
 Covers: a single clear speaker, close-energy faces resolving to `'multiple'`,
 an entirely unvoiced window, a mid-window speaker switch (60/40 split),
 all-energies-below-floor, history pruning, faces appearing/disappearing
-between frames, and an exact vote-count tie.
+between frames, an exact vote-count tie, a non-Map `energiesMap` input,
+the exact `dominanceRatio`/`minEnergy` boundary values (both use `>=`, so
+an exact match must resolve the same as clearing the threshold), and a
+tie between a real speaker's vote and an `'unknown'`/`'multiple'` vote.
 
 ## Demo
 
