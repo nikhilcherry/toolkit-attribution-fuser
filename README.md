@@ -40,7 +40,12 @@ fuser.attribute(t0, t1);
 // confidence = fraction of voiced frames in the window won by returned speaker
 
 fuser.instantWinner();  // → same shape, for the latest recorded frame (live UI)
+
+fuser.reset();  // discard all history (e.g. capture session restarted); options are kept
 ```
+
+Note: the strings `'multiple'` and `'unknown'` are reserved result labels —
+don't use them as face ids.
 
 ### Constructor options
 

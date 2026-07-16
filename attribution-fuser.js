@@ -10,6 +10,8 @@
 
 /**
  * @typedef {string|number} FaceId
+ *   Note: the strings 'multiple' and 'unknown' are reserved result labels;
+ *   avoid using them as face ids or attribution results become ambiguous.
  *
  * @typedef {Object} AttributionResult
  * @property {FaceId|'multiple'|'unknown'} speaker
@@ -66,6 +68,7 @@ export class AttributionFuser {
    * @returns {void}
    */
   record(timestampMs, energiesMap, vadActive) {
+    if (!Number.isFinite(timestampMs)) return;
     const map = energiesMap instanceof Map ? energiesMap : new Map();
     const vote = vadActive
       ? computeFrameVote(map, this.minEnergy, this.dominanceRatio)
@@ -83,9 +86,20 @@ export class AttributionFuser {
    */
   _prune(referenceT) {
     const cutoff = referenceT - this.historyMs;
-    while (this._frames.length > 0 && this._frames[0].t < cutoff) {
-      this._frames.shift();
+    let firstKept = 0;
+    while (firstKept < this._frames.length && this._frames[firstKept].t < cutoff) {
+      firstKept++;
     }
+    if (firstKept > 0) this._frames.splice(0, firstKept);
+  }
+
+  /**
+   * Discard all recorded history, e.g. when a capture session restarts.
+   * Configuration (dominanceRatio, minEnergy, historyMs) is kept.
+   * @returns {void}
+   */
+  reset() {
+    this._frames.length = 0;
   }
 
   /**

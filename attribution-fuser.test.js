@@ -229,6 +229,32 @@ test('a tie between a real speaker and an "unknown" vote resolves to multiple', 
   assert('speaker is "multiple" on an a/unknown tie', result.speaker === 'multiple', `got ${result.speaker}`);
 });
 
+test('reset() clears history but keeps configuration', () => {
+  const fuser = new AttributionFuser({ minEnergy: 0.01 });
+  for (let t = 0; t < 500; t += 100) {
+    fuser.record(t, new Map([['a', 0.02]]), true);
+  }
+  fuser.reset();
+  const result = fuser.attribute(0, 500);
+  assert('speaker is "unknown" after reset', result.speaker === 'unknown', `got ${result.speaker}`);
+  assert('confidence is 0 after reset', result.confidence === 0);
+  assert('minEnergy option survives reset', fuser.minEnergy === 0.01);
+  // The fuser is still usable after a reset.
+  fuser.record(1000, new Map([['b', 0.02]]), true);
+  assert('records again after reset', fuser.attribute(1000, 1000).speaker === 'b');
+});
+
+test('record() ignores non-finite timestamps instead of poisoning history', () => {
+  const fuser = new AttributionFuser();
+  fuser.record(0, new Map([['a', 0.01]]), true);
+  fuser.record(NaN, new Map([['b', 0.01]]), true);
+  fuser.record(Infinity, new Map([['b', 0.01]]), true);
+  fuser.record(100, new Map([['a', 0.01]]), true);
+  const result = fuser.attribute(0, 100);
+  assert('speaker is "a" (bad-timestamp frames dropped)', result.speaker === 'a', `got ${result.speaker}`);
+  assert('confidence is 1', approx(result.confidence, 1));
+});
+
 // ---------------------------------------------------------------------
 
 console.log(`\n${passed} passed, ${failed} failed`);
